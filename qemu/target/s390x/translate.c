@@ -5633,9 +5633,10 @@ static void wout_r1_D32(DisasContext *s, DisasOps *o)
 {
     TCGContext *tcg_ctx = s->uc->tcg_ctx;
     int r1 = get_field(s, r1);
+    TCGv_i64 t = tcg_temp_new_i64(tcg_ctx);
     store_reg32_i64(tcg_ctx, r1 + 1, o->out);
-    tcg_gen_shri_i64(tcg_ctx, o->out, o->out, 32);
-    store_reg32_i64(tcg_ctx, r1, o->out);
+    tcg_gen_shri_i64(tcg_ctx, t, o->out, 32);
+    store_reg32_i64(tcg_ctx, r1, t);
 }
 #define SPEC_wout_r1_D32 SPEC_r1_even
 
