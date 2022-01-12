@@ -339,7 +339,7 @@ static uint32_t cc_calc_icm(uint64_t mask, uint64_t val)
     }
 }
 
-static uint32_t cc_calc_sla_64(uint64_t src, int shift)
+static uint32_t cc_calc_sla(uint64_t src, int shift)
 {
     /* Do not use (1ULL << (shift + 1)): it triggers UB when shift is 63.  */
     uint64_t mask = ((((1ULL << shift) - 1) << 1) + 1) << (64 - (shift + 1));
@@ -365,11 +365,6 @@ static uint32_t cc_calc_sla_64(uint64_t src, int shift)
         return 1;
     }
     return 2;
-}
-
-static uint32_t cc_calc_sla_32(uint32_t src, int shift)
-{
-    return cc_calc_sla_64(((uint64_t)src) << 32, shift);
 }
 
 static uint32_t cc_calc_flogr(uint64_t dst)
@@ -495,11 +490,8 @@ static uint32_t do_calc_cc(CPUS390XState *env, uint32_t cc_op,
     case CC_OP_ICM:
         r =  cc_calc_icm(src, dst);
         break;
-    case CC_OP_SLA_32:
-        r =  cc_calc_sla_32(src, dst);
-        break;
-    case CC_OP_SLA_64:
-        r =  cc_calc_sla_64(src, dst);
+    case CC_OP_SLA:
+        r =  cc_calc_sla(src, dst);
         break;
     case CC_OP_FLOGR:
         r = cc_calc_flogr(dst);
